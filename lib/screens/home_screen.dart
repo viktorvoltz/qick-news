@@ -8,12 +8,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List articles;
+  List? articles;
 
   Future fetchHeadLines() async {
     String url =
         "https://newsapi.org/v2/everything?q=tesla&from=2021-03-01&sortBy=publishedAt&apiKey=41cfc53c8bdf4f9d934277c626d0eb2c";
-    final response = await http.get(url);
+    final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -21,7 +21,8 @@ class _HomeScreenState extends State<HomeScreen> {
         articles = result['articles'];
       });
     } else {
-      throw Exception("failed to get news");
+      print(response.body);
+      throw Exception("failed to get the news");
     }
   }
 
@@ -39,13 +40,13 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         body: ListView.builder(
             shrinkWrap: true,
-              itemCount: articles == null ? 0 : articles.length,
+              itemCount: articles == null ? 0 : articles!.length,
               itemBuilder: (context, index) {
                 return ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 5),
-                  leading: Image.network(articles[index]['urlToImage'] == null ? ' ': articles[index]['urlToImage']),
-                  title: Text(articles[index]['title']),
-                  subtitle: Text(articles[index]['content']),
+                  leading: Image.network(articles![index]['urlToImage'] == null ? ' ': articles![index]['urlToImage']),
+                  title: Text(articles![index]['title']),
+                  subtitle: Text(articles![index]['content']),
                 );
               }),
         );
